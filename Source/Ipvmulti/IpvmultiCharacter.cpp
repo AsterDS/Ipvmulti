@@ -13,6 +13,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Engine/Engine.h"
 #include "Actors/IpvmultiProjectile.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -66,17 +68,19 @@ AIpvmultiCharacter::AIpvmultiCharacter()
 	FireRate = 0.25f;
 	bIsFiringWeapon = false;
 
-	CurrentAmmo = 5;
+	MaxAmmo = 5.0f;
+	CurrentAmmo = MaxAmmo;
+	
 }
 
 void AIpvmultiCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HasAuthority())
+	/*if (HasAuthority())
 	{
 		CurrentAmmo = MaxAmmo;
-	}
+	}*/
 }
 
 void AIpvmultiCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -181,11 +185,6 @@ void AIpvmultiCharacter::OnRep_CurrentHealth()
 	OnHealthUpdate();
 }
 
-void AIpvmultiCharacter::OnRep_CurrentAmmo()
-{
-	OnRep_Ammo();
-}
-
 
 void AIpvmultiCharacter::OnHealthUpdate_Implementation()
 {
@@ -247,6 +246,18 @@ float AIpvmultiCharacter::TakeDamage(float DamageTaken, struct FDamageEvent cons
 	float damageApplied = CurrentHealth - DamageTaken;
 	SetCurrentHealth(damageApplied);
 	return damageApplied;
+}
+
+void AIpvmultiCharacter::OpenLobby()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+	World->ServerTravel("Game/Diego/Levels/Lobby.Lobby?listen");
+}
+
+void AIpvmultiCharacter::CallOpenLevel(const FString& IPAdress)
+{
+	UGameplayStatics::OpenLevel(this, FName(*IPAdress));
 }
 
 void AIpvmultiCharacter::Move(const FInputActionValue& Value)

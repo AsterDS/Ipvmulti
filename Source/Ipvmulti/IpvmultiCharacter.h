@@ -113,7 +113,7 @@ protected:
 	virtual void BeginPlay() override;
 	
 public:
-/** Getter for Max Health.*/
+		 /** Getter for Max Health.*/
 	UFUNCTION(BlueprintPure, Category="Health")
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
  
@@ -125,14 +125,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Health")
 	void SetCurrentHealth(float healthValue);
 
+	UFUNCTION(BlueprintPure, Category="Ammo")
+	FORCEINLINE float GetMaxAmmo() const { return MaxAmmo; }
+
+	UFUNCTION(BlueprintPure, Category="Ammo")
+	FORCEINLINE float GetCurrentAmmo() const { return CurrentAmmo; }
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	int32 MaxAmmo = 5;
+	int32 MaxAmmo;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_Ammo, VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	int32 CurrentAmmo;
 	
-	UFUNCTION()
-	void OnRep_CurrentAmmo();
 	UFUNCTION(BlueprintNativeEvent)
 	void OnRep_Ammo();
 
@@ -144,5 +148,11 @@ public:
          
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	float TakeDamage( float DamageTaken, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser ) override;
+
+	UFUNCTION(BlueprintCallable)
+	void OpenLobby();
+
+	UFUNCTION(BlueprintCallable)
+	void CallOpenLevel(const FString& IPAdress);
 };
 
