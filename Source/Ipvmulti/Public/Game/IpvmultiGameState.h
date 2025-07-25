@@ -1,0 +1,19 @@
+﻿#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/GameStateBase.h"
+#include "IpvmultiGameState.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class IPVMULTI_API AIpvmultiGameState : public AGameStateBase
+{
+	GENERATED_BODY()
+	
+public:
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnMissionComplete(APawn* InstigatorPawn, bool bMissionSuccess);
+};

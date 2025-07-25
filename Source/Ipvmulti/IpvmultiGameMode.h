@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,7 +11,17 @@ class AIpvmultiGameMode : public AGameModeBase
 
 public:
 	AIpvmultiGameMode();
+	
+	void CompleteMission(APawn* Pawn);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Gamemode")
+	void OnMissionCompleted(APawn*Pawn);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	TSubclassOf<AActor> SpectatorViewClass;
 };
+
 
 
 

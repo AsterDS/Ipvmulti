@@ -1,7 +1,7 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "IpvmultiGameMode.h"
-#include "IpvmultiCharacter.h"
+
+#include "Game/IpvmultiGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
 AIpvmultiGameMode::AIpvmultiGameMode()
@@ -12,4 +12,36 @@ AIpvmultiGameMode::AIpvmultiGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	GameStateClass = AIpvmultiGameState::StaticClass();
 }
+
+void AIpvmultiGameMode::CompleteMission(APawn* Pawn)
+{
+	if (Pawn == nullptr) return;
+	//Pawn->DisableInput(nullptr);
+	
+	if (SpectatorViewClass)
+	{
+		TArray<AActor*> ReturnActors;
+		UGameplayStatics::GetAllActorsOfClass(this, SpectatorViewClass, ReturnActors);
+		if (ReturnActors.Num() > 0)
+		{
+			AActor* NewViewTarget = ReturnActors[0];
+			for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+			{
+				APlayerController* PC = It->Get();
+				if (PC)
+				{
+					PC->SetViewTargetWithBlend(NewViewTarget, 1.f, VTBlend_Cubic);
+				}	
+			}
+		}
+	}
+	AIpvmultiGameState* GS = GetGameState<AIpvmultiGameState>();
+	if (GS)
+	{
+		GS->MulticastOnMissionComplete(Pawn, true);
+	}
+	OnMissionCompleted(Pawn);
+}
+	

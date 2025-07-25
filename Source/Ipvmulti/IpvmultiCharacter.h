@@ -154,5 +154,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CallOpenLevel(const FString& IPAdress);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+	bool bIsCarryingObjective;
 };
 
